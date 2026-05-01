@@ -5,11 +5,15 @@ from enum import IntEnum
 from threading import RLock
 from typing import NamedTuple, Set, Optional
 
-import serial
-from serial.tools import list_ports
-from _collections import deque
+try:
+    import serial  # type: ignore
+    from serial.tools import list_ports  # type: ignore
+except ModuleNotFoundError:  # pragma: no cover
+    serial = None  # type: ignore[assignment]
+    list_ports = None  # type: ignore[assignment]
+from collections import deque
 
-from pydobot.message import Message
+from .message import Message
 
 MAX_QUEUE_LEN = 32
 
@@ -195,6 +199,11 @@ class Dobot:
 
         self.logger = logging.Logger(__name__)
         self._lock = RLock()
+
+        if serial is None or list_ports is None:
+            raise DobotException(
+                "pyserial is required to use Dobot. Install it with `python -m pip install pyserial`."
+            )
 
         if port is None:
             # Find the serial port
