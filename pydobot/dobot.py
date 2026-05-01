@@ -5,12 +5,8 @@ from enum import IntEnum
 from threading import RLock
 from typing import NamedTuple, Set, Optional
 
-try:
-    import serial  # type: ignore
-    from serial.tools import list_ports  # type: ignore
-except ModuleNotFoundError:  # pragma: no cover
-    serial = None  # type: ignore[assignment]
-    list_ports = None  # type: ignore[assignment]
+import serial
+from serial.tools import list_ports
 from collections import deque
 
 from .message import Message
